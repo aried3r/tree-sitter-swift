@@ -35,6 +35,7 @@ git config --local user.name "Alex Pinkus (Bot)"
 git add ./src/*.c --force
 git add ./src/tree_sitter/* --force
 git add ./src/*.json --force
+git add scripts
 git add grammar.js
 git add package.json
 git add test
