@@ -1,8 +1,9 @@
-name: Publish package to npm and pypi
+name: Publish package to npm
 
 on:
   push:
     branches: ["with-generated-files"]
+  workflow_dispatch:
 
 concurrency:
   group: ${{github.workflow}}-${{github.ref}}
@@ -13,5 +14,3 @@ jobs:
     uses: tree-sitter/workflows/.github/workflows/package-npm.yml@main
     secrets:
       NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-    with:
-      node-version: '20.12.1'
