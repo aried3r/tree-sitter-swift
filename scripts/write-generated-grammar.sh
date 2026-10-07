@@ -6,6 +6,7 @@ ref=$1
 branch_name=with-generated-files
 
 # Load the branch that contains generated grammar files.
+git fetch --all
 git checkout -b $branch_name -t origin/$branch_name
 
 # Update our local directory to match the $ref, but then put the HEAD back at the previous commit.
@@ -34,12 +35,16 @@ git config --local user.name "Alex Pinkus (Bot)"
 git add ./src/*.c --force
 git add ./src/tree_sitter/* --force
 git add ./src/*.json --force
+git add scripts
 git add grammar.js
 git add package.json
 git add test
 git add queries
 git add Makefile
 git add bindings/c/*.in
+git add setup.py
+git add binding.gyp
+git add tree-sitter.json
 git commit -m "Updating grammar files for version ${ref/refs\/tags\//}"
 echo "Committing new generated grammar"
 
@@ -51,3 +56,9 @@ tag_name=$(basename $ref)-with-generated-files
 git tag $tag_name
 git push dest $tag_name
 echo "Checkin complete!"
+
+# Pushes made with the default GITHUB_TOKEN do not trigger workflows
+# (https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow),
+# so the push above never starts publish-prebuilt.yml. workflow_dispatch is
+# exempt from that restriction, so dispatch the publish explicitly.
+gh workflow run publish-prebuilt.yml --ref $branch_name
